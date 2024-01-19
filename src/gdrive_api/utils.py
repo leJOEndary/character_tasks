@@ -101,7 +101,6 @@ def get_nested_folder_id(
         parent_id = folders[0].get("id")
     return parent_id
 
-
 def create_folder_path(service: Resource, folder_path: str, parent_id: str) -> str:
     """Create a new folder path in Google Drive, creating subfolders as needed.
 
@@ -248,91 +247,3 @@ def extract_questions_by_topic(problems: List[dict]) -> Dict[str, Set[str]]:
                     questions_by_topic[topic].add(user_content)
     
     return questions_by_topic
-
-def generate_human_like_questions(topic, n=5, existing_questions=None):
-    SYSTEM_PROMPT = f"""IDENTITY:
-You are a world class Python developer. And you're concise and precise.
-
-CONTEXT:
-We are trying to generate human-like queries that a user would send to an ai assistant through a chat interface. 
-The user's query tone & structure should be diversified as much as possible making sure to include some realistic examples.
-We already have batch of previously generated questions and we want to avoid duplication of questions when generating new batch.
-
-CONSTRAINTS:
-1. Python Related
-2. Easy (Solvable by a median developer in 15 minutes)
-3. Questions should elicit a response that includes code.
-
-INSTRUCTION:
-You will be given a topic and an ask for number of questions to generate.
-You will also be given previously generated questions for respective topic and ask to ignore generating question if exist.
-The aim is to maximize diversity.
-Act accordingly.
-
-RESPONSE FORMAT:
-A JSON-valid list of questions(strings) like {{"questions": ["question1", "question2", ...]}}
-"""
-
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4-1106-preview",
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": f"Topic: {topic} \nNumber of questions: {n} \n existing questions {existing_questions}"},
-            ],
-            temperature=0.0,
-            max_tokens=4096,
-            seed = 42,
-            response_format={ 
-                "type": "json_object" 
-            },
-        )
-        questions = json.loads(response.choices[0].message.content)
-        return questions
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return None
-    
-
-def generate_human_like_code_modification_requests(topic, n=5, existing_questions=None):
-    SYSTEM_PROMPT = f"""IDENTITY:
-You are a world class Python developer. And you're concise and precise.
-
-CONTEXT:
-We are trying to generate human-like code modification requests that a user would send to an ai assistant through a chat interface.
-The user's query tone & structure should be diversified as much as possible making sure to include some realistic examples.
-We already have batch of previously generated questions and we want to avoid duplication of questions when generating new batch.
-
-CONSTRAINTS:
-1. Python Related
-2. Easy (Solvable by a median developer in 15 minutes)
-3. Questions should include code along with a request to modify it.
-
-INSTRUCTION:
-You will be given a topic and an ask for number of questions to generate.
-You will also be given previously generated questions for respective topic and ask to ignore generating question if exist.
-The aim is to maximize diversity.
-Act accordingly.
-
-RESPONSE FORMAT:
-A JSON-valid list of questions(strings) like {{"questions": ["question1", "question2", ...]}}
-    """
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4-1106-preview",
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": f"Topic: {topic} \nNumber of code modification requests: {n} \n existing topic {existing_questions}"},
-            ],
-            temperature=0.0,
-            max_tokens=4096,
-            seed = 42,
-            response_format={ 
-                "type": "json_object" 
-            },
-        )
-        questions = json.loads(response.choices[0].message.content)
-        return questions
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return None

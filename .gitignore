@@ -2,10 +2,9 @@
 venv/
 creds/
 data/
-notebooks/*.ipynb
-notebooks/test
+notebooks/*
 jsonl_conversations/
-stacktrace_data
+stacktrace_data/
 batch_3.csv
 files_list.json
 

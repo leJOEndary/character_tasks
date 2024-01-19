@@ -1,0 +1,174 @@
+{
+    "SoftwareCentricOccupations": {
+        "MostPopular": [
+            {
+                "Occupation": "Python Developer",
+                "ComplexityScore": 6
+            },
+            {
+                "Occupation": "Web Developer",
+                "ComplexityScore": 5
+            },
+            {
+                "Occupation": "Data Scientist",
+                "ComplexityScore": 8
+            },
+            {
+                "Occupation": "Mobile App Developer",
+                "ComplexityScore": 6
+            },
+            {
+                "Occupation": "Python DevOps Engineer",
+                "ComplexityScore": 7
+            },
+            {
+                "Occupation": "Front-End Developer",
+                "ComplexityScore": 5
+            },
+            {
+                "Occupation": "Backend Developer",
+                "ComplexityScore": 6
+            },
+            {
+                "Occupation": "Full-Stack Developer",
+                "ComplexityScore": 7
+            },
+            {
+                "Occupation": "Machine Learning Engineer",
+                "ComplexityScore": 9
+            },
+            {
+                "Occupation": "Cybersecurity Analyst",
+                "ComplexityScore": 7
+            }
+        ],
+        "Trending": [
+            {
+                "Occupation": "Artificial Intelligence Engineer",
+                "ComplexityScore": 9
+            },
+            {
+                "Occupation": "Cloud Engineer (Python-Focused)",
+                "ComplexityScore": 7
+            },
+            {
+                "Occupation": "Data Engineer",
+                "ComplexityScore": 8
+            },
+            {
+                "Occupation": "Site Reliability Engineer (SRE) with Python",
+                "ComplexityScore": 7
+            },
+            {
+                "Occupation": "Cybersecurity Analyst using Python",
+                "ComplexityScore": 7
+            },
+            {
+                "Occupation": "Data Visualization Developer",
+                "ComplexityScore": 6
+            },
+            {
+                "Occupation": "Robotics Engineer with Python Expertise",
+                "ComplexityScore": 8
+            },
+            {
+                "Occupation": "Python Content Creator (Technical Writing/Tutorials)",
+                "ComplexityScore": 4
+            },
+            {
+                "Occupation": "Data Analytics Consultant",
+                "ComplexityScore": 7
+            },
+            {
+                "Occupation": "Natural Language Processing Engineer",
+                "ComplexityScore": 9
+            }
+        ]
+    },
+    "NonTechnicalOccupations": {
+        "MostPopular": [
+            {
+                "Occupation": "Business Analyst",
+                "ComplexityScore": 5
+            },
+            {
+                "Occupation": "Marketing Manager",
+                "ComplexityScore": 6
+            },
+            {
+                "Occupation": "Financial Analyst",
+                "ComplexityScore": 7
+            },
+            {
+                "Occupation": "Project Manager",
+                "ComplexityScore": 6
+            },
+            {
+                "Occupation": "Product Manager",
+                "ComplexityScore": 7
+            },
+            {
+                "Occupation": "Operations Manager",
+                "ComplexityScore": 6
+            },
+            {
+                "Occupation": "Healthcare Administrator",
+                "ComplexityScore": 6
+            },
+            {
+                "Occupation": "Academic Researcher",
+                "ComplexityScore": 7
+            },
+            {
+                "Occupation": "Supply Chain Manager",
+                "ComplexityScore": 7
+            },
+            {
+                "Occupation": "Digital Content Strategist",
+                "ComplexityScore": 5
+            }
+        ],
+        "Trending": [
+            {
+                "Occupation": "Data Analyst",
+                "ComplexityScore": 6
+            },
+            {
+                "Occupation": "Growth Hacker",
+                "ComplexityScore": 6
+            },
+            {
+                "Occupation": "Bioinformatics Specialist",
+                "ComplexityScore": 8
+            },
+            {
+                "Occupation": "Environmental Scientist",
+                "ComplexityScore": 7
+            },
+            {
+                "Occupation": "User Experience Researcher",
+                "ComplexityScore": 6
+            },
+            {
+                "Occupation": "Data Journalist",
+                "ComplexityScore": 5
+            },
+            {
+                "Occupation": "Educational Technologist",
+                "ComplexityScore": 6
+            },
+            {
+                "Occupation": "Precision Agriculture Specialist",
+                "ComplexityScore": 7
+            },
+            {
+                "Occupation": "Smart City Planner",
+                "ComplexityScore": 7
+            },
+            {
+                "Occupation": "E-Commerce Analyst",
+                "ComplexityScore": 6
+            }
+        ]
+    }
+}
