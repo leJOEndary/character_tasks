@@ -3,6 +3,7 @@ venv/
 creds/
 data/
 notebooks/*
+operations/question_generation/notebooks/*
 jsonl_conversations/
 stacktrace_data/
 batch_3.csv
