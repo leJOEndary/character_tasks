@@ -44,6 +44,9 @@ def extract_messages(notebook):
 
     :param notebook: The notebook object.
     """
+    if notebook is None:
+        return []
+
     messages = []
     cut_tail = count_empty_from_end(notebook.cells)
     cells = notebook.cells[2:]
@@ -108,6 +111,8 @@ def fix_missing_roles(messages):
 
 
 def extract_metadata(notebook):
+    if notebook is None:
+        return {}
     # # Extract the first cell
     first_cell = notebook.cells[0]
     lines = first_cell["source"].split("\n")
