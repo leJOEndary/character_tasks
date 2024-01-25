@@ -1,0 +1,212 @@
+{
+  "components": {
+    "comp-get-all-contributors": {
+      "executorLabel": "exec-get-all-contributors",
+      "inputDefinitions": {
+        "parameters": {
+          "project_id": {
+            "parameterType": "STRING"
+          }
+        }
+      },
+      "outputDefinitions": {
+        "parameters": {
+          "ret1": {
+            "parameterType": "STRING"
+          }
+        }
+      }
+    },
+    "comp-get-all-conversations": {
+      "executorLabel": "exec-get-all-conversations",
+      "inputDefinitions": {
+        "parameters": {
+          "project_id": {
+            "parameterType": "STRING"
+          }
+        }
+      },
+      "outputDefinitions": {
+        "parameters": {
+          "ret1": {
+            "parameterType": "STRING"
+          }
+        }
+      }
+    },
+    "comp-get-all-conversations-reviews": {
+      "executorLabel": "exec-get-all-conversations-reviews",
+      "inputDefinitions": {
+        "parameters": {
+          "project_id": {
+            "parameterType": "STRING"
+          }
+        }
+      },
+      "outputDefinitions": {
+        "parameters": {
+          "ret1": {
+            "parameterType": "STRING"
+          }
+        }
+      }
+    }
+  },
+  "deploymentSpec": {
+    "executors": {
+      "exec-get-all-contributors": {
+        "container": {
+          "args": [
+            "--executor_input",
+            "{{$}}",
+            "--function_to_execute",
+            "get_all_contributors"
+          ],
+          "command": [
+            "sh",
+            "-c",
+            "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet     --no-warn-script-location 'pandas' 'pandas-gbq' 'google-cloud-aiplatform' 'kfp==2.0.1' 'tqdm' 'protobuf==3.19.6' 'google-cloud-bigquery' 'kfp==2.0.1' && \"$0\" \"$@\"\n",
+            "sh",
+            "-ec",
+            "program_path=$(mktemp -d)\nprintf \"%s\" \"$0\" > \"$program_path/ephemeral_component.py\"\npython3 -m kfp.components.executor_main                         --component_module_path                         \"$program_path/ephemeral_component.py\"                         \"$@\"\n",
+            "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import *\n\ndef get_all_contributors(project_id: str) -> NamedTuple(\"output\", [(\"ret1\", str)]):\n    \"\"\"GE component for VAI pipeline.\"\"\"\n    import json  # noqa: F401\n    import logging  # noqa: F401\n    import re  # noqa: F401\n    import time  # noqa: F401\n    import warnings  # noqa: F401\n    from datetime import datetime  # noqa: F401\n\n    import pandas as pd  # noqa: F401\n    from data_pipelines.src_files.contributor import load_contributors  # noqa: F401\n\n    warnings.filterwarnings(\"ignore\")\n    load_contributors(project_id=project_id)\n\n    ret1 = \"true\"\n    return (ret1,)\n\n"
+          ],
+          "image": "us-central1-docker.pkg.dev/turing-gpt/gpt-project-images/character_ai_dev:latest",
+          "resources": {
+            "cpuLimit": 8.0,
+            "memoryLimit": 32.0
+          }
+        }
+      },
+      "exec-get-all-conversations": {
+        "container": {
+          "args": [
+            "--executor_input",
+            "{{$}}",
+            "--function_to_execute",
+            "get_all_conversations"
+          ],
+          "command": [
+            "sh",
+            "-c",
+            "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet     --no-warn-script-location 'pandas' 'pandas-gbq' 'google-cloud-aiplatform' 'kfp==2.0.1' 'tqdm' 'protobuf==3.19.6' 'google-cloud-bigquery' 'kfp==2.0.1' && \"$0\" \"$@\"\n",
+            "sh",
+            "-ec",
+            "program_path=$(mktemp -d)\nprintf \"%s\" \"$0\" > \"$program_path/ephemeral_component.py\"\npython3 -m kfp.components.executor_main                         --component_module_path                         \"$program_path/ephemeral_component.py\"                         \"$@\"\n",
+            "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import *\n\ndef get_all_conversations(project_id: str) -> NamedTuple(\"output\", [(\"ret1\", str)]):\n    \"\"\"GE component for VAI pipeline.\"\"\"\n    import json  # noqa: F401\n    import logging  # noqa: F401\n    import re  # noqa: F401\n    import time  # noqa: F401\n    import warnings  # noqa: F401\n    from datetime import datetime  # noqa: F401\n\n    import pandas as pd  # noqa: F401\n    from data_pipelines.src_files.conversation  import load_conversations\n\n    warnings.filterwarnings(\"ignore\")\n    load_conversations(project_id=project_id)\n\n    ret1 = \"true\"\n    return (ret1,)\n\n"
+          ],
+          "image": "us-central1-docker.pkg.dev/turing-gpt/gpt-project-images/character_ai_dev:latest",
+          "resources": {
+            "cpuLimit": 8.0,
+            "memoryLimit": 32.0
+          }
+        }
+      },
+      "exec-get-all-conversations-reviews": {
+        "container": {
+          "args": [
+            "--executor_input",
+            "{{$}}",
+            "--function_to_execute",
+            "get_all_conversations_reviews"
+          ],
+          "command": [
+            "sh",
+            "-c",
+            "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet     --no-warn-script-location 'pandas' 'pandas-gbq' 'google-cloud-aiplatform' 'kfp==2.0.1' 'tqdm' 'protobuf==3.19.6' 'google-cloud-bigquery' 'kfp==2.0.1' && \"$0\" \"$@\"\n",
+            "sh",
+            "-ec",
+            "program_path=$(mktemp -d)\nprintf \"%s\" \"$0\" > \"$program_path/ephemeral_component.py\"\npython3 -m kfp.components.executor_main                         --component_module_path                         \"$program_path/ephemeral_component.py\"                         \"$@\"\n",
+            "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import *\n\ndef get_all_conversations_reviews(project_id: str) -> NamedTuple(\"output\", [(\"ret1\", str)]):\n    \"\"\"GE component for VAI pipeline.\"\"\"\n    import json  # noqa: F401\n    import logging  # noqa: F401\n    import re  # noqa: F401\n    import time  # noqa: F401\n    import warnings  # noqa: F401\n    from datetime import datetime  # noqa: F401\n\n    import pandas as pd  # noqa: F401\n    from data_pipelines.src_files.conversation_reviews  import load_conversations_reviews\n\n    warnings.filterwarnings(\"ignore\")\n    load_conversations_reviews(project_id=project_id)\n\n    ret1 = \"true\"\n    return (ret1,)\n\n"
+          ],
+          "image": "us-central1-docker.pkg.dev/turing-gpt/gpt-project-images/character_ai_dev:latest",
+          "resources": {
+            "cpuLimit": 8.0,
+            "memoryLimit": 32.0
+          }
+        }
+      }
+    }
+  },
+  "pipelineInfo": {
+    "description": "VAI Pipeline json creation.",
+    "name": "load-character-ai-pipeline"
+  },
+  "root": {
+    "dag": {
+      "tasks": {
+        "get-all-contributors": {
+          "cachingOptions": {
+            "enableCache": true
+          },
+          "componentRef": {
+            "name": "comp-get-all-contributors"
+          },
+          "inputs": {
+            "parameters": {
+              "project_id": {
+                "componentInputParameter": "project"
+              }
+            }
+          },
+          "taskInfo": {
+            "name": "get-all-contributors"
+          }
+        },
+        "get-all-conversations": {
+          "cachingOptions": {
+            "enableCache": true
+          },
+          "componentRef": {
+            "name": "comp-get-all-conversations"
+          },
+          "dependentTasks": [
+            "get-all-contributors"
+          ],
+          "inputs": {
+            "parameters": {
+              "project_id": {
+                "componentInputParameter": "project"
+              }
+            }
+          },
+          "taskInfo": {
+            "name": "get-all-conversations"
+          }
+        },
+        "get-all-conversations-reviews": {
+          "cachingOptions": {
+            "enableCache": true
+          },
+          "componentRef": {
+            "name": "comp-get-all-conversations-reviews"
+          },
+          "dependentTasks": [
+            "get-all-conversations"
+          ],
+          "inputs": {
+            "parameters": {
+              "project_id": {
+                "componentInputParameter": "project"
+              }
+            }
+          },
+          "taskInfo": {
+            "name": "get-all-conversations-reviews"
+          }
+        }
+      }
+    },
+    "inputDefinitions": {
+      "parameters": {
+        "project": {
+          "defaultValue": "turing-gpt",
+          "isOptional": true,
+          "parameterType": "STRING"
+        }
+      }
+    }
+  },
+  "schemaVersion": "2.1.0",
+  "sdkVersion": "kfp-2.0.1"
+}
