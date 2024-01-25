@@ -5,6 +5,7 @@ data/
 notebooks/*.ipynb
 notebooks/test
 jsonl_conversations/
+operations/delivery/json_conversations/
 stacktrace_data
 batch_3.csv
 files_list.json
