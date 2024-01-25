@@ -6,7 +6,7 @@ from openai import OpenAI
 class QuestionGenerator:
     def __init__(self):
         self.openai_api_key = os.environ.get("OPENAI_API_KEY")
-        self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+        self.client = OpenAI()
     
     def _generate_questions(self, system_prompt, topic, n, existing_questions, response_format):
         try:
