@@ -8,7 +8,7 @@ from llama_index.llms.openai import OpenAI
 from llama_index.program import OpenAIPydanticProgram
 from pydantic import BaseModel, Field
 from tqdm import tqdm
-from utils import process_batch
+from py_files.utils import process_batch
 
 load_dotenv(find_dotenv())
 api_key = os.environ["OPENAI_API_KEY"]
