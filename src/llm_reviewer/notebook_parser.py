@@ -2,6 +2,10 @@ import json
 
 from fuzzywuzzy import fuzz
 from openai import OpenAI
+from llama_index.program import OpenAIPydanticProgram
+from llama_index.llms.openai import OpenAI as llama_index_OpenAI
+from pydantic import BaseModel, Field
+
 
 from src.llm_reviewer.constants import Roles, PATH_TO_SECRETS
 
@@ -113,6 +117,7 @@ def fix_missing_roles(messages):
 def extract_metadata(notebook):
     if notebook is None:
         return {}
+    
     # # Extract the first cell
     first_cell = notebook.cells[0]
     lines = first_cell["source"].split("\n")
@@ -125,13 +130,134 @@ def extract_metadata(notebook):
         if "**Target Number of Turns (User + Assistant)**" in line:
             metadata["target_turns"] = line.split(" - ")[1]
 
+
+    if "Project / Action" in first_cell["source"]:
+        metadata = parse_metadata_dynamically(first_cell["source"])
+
     return metadata
+
+
+def parse_metadata_dynamically(metadata_string): 
+    """
+    Identify the language of each code block and transform it into markdown syntax highlighting.
+    """
+
+
+    SYSTEM_PROMPT = f"""IDENTITY:
+    You are an information processor.
+
+    INSTRUCTION:
+    We have metadata strings that contain key/value pairs. We need to identify the key/value pairs within the metadata string and extract it as a JSON object.
+
+    If there can be nested key/value pairs, please provide the JSON object containing only the leaf key/value pairs flattened.
+    """
+    try:
+        openai_client = OpenAI(api_key=openai_api_key)
+        response = openai_client.chat.completions.create(
+            model="gpt-3.5-turbo-0125",
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": metadata_string},
+            ],
+            temperature=0.0,
+            max_tokens=256,
+            seed = 42,
+            response_format={ 
+                "type": "json_object" 
+            },
+        )
+        metadata = json.loads(response.choices[0].message.content)
+        return metadata
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+
+  
+def transform__concatenate_back_to_back_messages_from_same_role(messages):
+    """
+    Merge back-to-back user & ai messages into a single message, with the content of the messages concatenated together.
+    """
+    if len(messages) == 0:
+        return []
+
+    concatenated_messages = []
+    current_concatenation = ""
+    current_role = messages[0]['role']
+    for message in messages:
+        if message.get('role') == current_role:
+            current_concatenation += message.get('content').strip() + "\n\n"
+        else:
+            concatenated_messages.append({
+                'role': current_role,
+                'content': current_concatenation.strip()
+            })
+            current_concatenation = message.get('content') + "\n\n"
+            current_role = message.get('role')
+
+    # Add the last concatenation
+    concatenated_messages.append({
+        'role': current_role,
+        'content': current_concatenation.rstrip()
+    })
+    return concatenated_messages
+
+
+
+def transform__code_blocks_to_syntax_highlighted_md(messages): 
+    """
+    Identify the language of each code block and transform it into markdown syntax highlighting.
+    """
+    transformed_messages = []
+
+    # Isolate Code blocks
+    for message in messages:
+
+        if message.get("type") != "code":
+            transformed_messages.append(message)
+            continue
+
+        message_copy = message.copy()
+
+        # Identify the language of each code block
+        class Language(BaseModel):
+            """Data model for identifying the language of a code block for use in markdown syntax highlighting."""
+            language: str
+
+        prompt_template_str = """
+        Given the following conversation, Identify the language of each code block.
+        The output should be compatible with markdown syntax highlighting for triple backtick code blocks.
+
+        Contents:
+        {code}
+        """
+        program = OpenAIPydanticProgram.from_defaults(
+            llm=llama_index_OpenAI(api_key=openai_api_key, model="gpt-4-1106-preview", temperature=0),
+            output_cls=Language,
+            prompt_template_str=prompt_template_str,
+            verbose=False,
+        )
+        output = program(
+            code=message_copy.get("content").strip()
+        )
+        language = output.language
+
+        # Strip leading and trailing spaces/newlines from the code block
+        message_copy["content"] = f"```{language}\n{message_copy.get('content').strip()}\n```"
+        message_copy["type"] = "markdown"
+
+        # Wrap in triple backticks and append to transformed messages
+        transformed_messages.append(message_copy)
+
+    return transformed_messages
+
 
 
 def notebook_parser(notebook):
     messages = extract_messages(notebook)
     metadata = extract_metadata(notebook)
     messages, errors = fix_missing_roles(messages)
+    messages = transform__code_blocks_to_syntax_highlighted_md(messages)
+    messages = transform__concatenate_back_to_back_messages_from_same_role(messages)
     if errors:
         raise Exception("Failed to predict missing roles.")
     return {"metadata": metadata, "messages": messages}
