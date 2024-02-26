@@ -77,6 +77,48 @@ class GoogleSheetsService:
         response = request.execute()
         print(f"Updated or appended data to '{sheet_title}'")
         return response
+    
+    
+    def delete_rows_in_list_of_values(self, spreadsheet_id, sheet_title, list_of_values):
+        # Get the current values in the sheet
+        cleaned_sheet_title = f"'{sheet_title}'"
+        range_ = f"{cleaned_sheet_title}!A:H"  # This is the variable that probably caused the crash
+        result = self.service.spreadsheets().values().get(
+            spreadsheetId=spreadsheet_id, range=range_
+        ).execute()
+        current_values = result.get('values', [])
+        
+        # Find the rows to delete
+        rows_to_delete = []
+        for i, row in enumerate(current_values):
+            if row in list_of_values:
+                rows_to_delete.append(i + 1)  # Sheet rows are 1-indexed
+        
+        print(f"Rows to delete: {rows_to_delete}")
+        
+        # Correctly handling row deletion to account for shifting indices
+        requests = []
+        for i, row in enumerate(sorted(rows_to_delete, reverse=True)):  # Reverse sort to delete from bottom to top
+            requests.append({
+                'deleteDimension': {
+                    'range': {
+                        'sheetId': self.get_sheet_id(spreadsheet_id, sheet_title),
+                        'dimension': 'ROWS',
+                        'startIndex': row - 1 - i,  # Adjust for 0-indexing and already deleted rows
+                        'endIndex': row - i  # No adjustment needed here since endIndex is exclusive
+                    }
+                }
+            })
+
+        if requests and False:
+            self.service.spreadsheets().batchUpdate(
+                spreadsheetId=spreadsheet_id,
+                body={'requests': requests}
+            ).execute()
+        
+        print(f"Deleted {len(rows_to_delete)} rows from '{sheet_title}'")
+
+
 
 
 def download_sheet_as_df(service_account_path, sheet_id, sheet_name):

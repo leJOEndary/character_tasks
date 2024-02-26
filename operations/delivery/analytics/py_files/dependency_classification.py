@@ -1,6 +1,6 @@
 from pydantic import Field
 from tqdm import tqdm
-from utils import PROJECT_ROOT
+from py_files.utils import PROJECT_ROOT
 from src.sheets_utils import download_sheet_as_df
 from pydantic import BaseModel, Field
 from typing import List
@@ -15,7 +15,7 @@ load_dotenv(find_dotenv())
 api_key = os.environ["OPENAI_API_KEY"]
 from pydantic import BaseModel
 from llama_index.llms.openai import OpenAI
-from utils import process_batch
+from py_files.utils import process_batch
 
 
 class DependencyUsage(BaseModel):

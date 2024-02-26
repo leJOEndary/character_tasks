@@ -68,6 +68,7 @@ def upload_file(
     return file_url
 
 
+#TODO: Add threading to speed up upload: https://chat.openai.com/share/0884998f-59f1-4593-bd76-4a5d26888356
 def upload_folder(
     service: Resource,
     source_folder_path: str,
