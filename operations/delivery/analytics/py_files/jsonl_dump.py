@@ -13,7 +13,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 from openai import OpenAI
-from utils import get_delivered_df, DATA_DIR, PROJECT_ROOT
+from py_files.utils import get_delivered_df, DATA_DIR, PROJECT_ROOT
 
 from src.llm_reviewer.constants import Roles
 from src.llm_reviewer.llm_api import LLMAPIFactory, make_llm_request

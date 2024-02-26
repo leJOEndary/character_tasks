@@ -1,6 +1,6 @@
 from tqdm import tqdm
-from utils import PROJECT_ROOT
-from src.sheets_utils import download_sheet_as_df
+# from utils import PROJECT_ROOT
+# from src.sheets_utils import download_sheet_as_df
 from pydantic import BaseModel, Field
 from typing import List
 import os
@@ -14,34 +14,29 @@ api_key = os.environ["OPENAI_API_KEY"]
 load_dotenv(find_dotenv())
 from pydantic import BaseModel
 from llama_index.llms.openai import OpenAI
-from utils import process_batch
+from py_files.utils import process_batch
 
 
 class DomainCategory(BaseModel):
     top_level: str
     sub_level: str
-    detailed_level: str
-
 
 def classify_conversation_by_domain(conversation: List[dict]) -> DomainCategory:
     DOMAIN_CATEGORIES = """
-    - Problem Solving
-    - Testing
-    - Python Basics & Scripting
-    - Databases
-    - Data Analysis
-    - Machine Learning
-    - Web Development
-    - System Design
-    - Mobile Devlopment
-    - Devops
-    - Cloud Computing
-    - Security
-    - Other
+        - Python basics & scripting
+        - Problem Solving
+        - Interview Prep
+        - Web Development
+        - Testing
+        - Cloud Computing / Frameworks
+        - Data Analysis
+        - Machine Learning
+        - Other languages
+        - Other
     """
 
     prompt_template_str = """
-    Categorize the following conversation by domain into one of the following top-level categories, then sub & detailed categories that you think is descriptive & appropriate:
+    Categorize the theme of user requests in the following conversation by domain into one of the following top-level categories, then sub categories that you think is descriptive & appropriate:
     {categories}
 
     Conversation:
